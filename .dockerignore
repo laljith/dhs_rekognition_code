@@ -1,0 +1,11 @@
+docker
+.gitignore
+.dockerignore
+script_cicd_local.sh
+Jenkinsfile
+pipeline_config.groovy
+*.md
+sonar-project.properties
+charts
+coverage
+target

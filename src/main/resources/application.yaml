@@ -1,0 +1,12 @@
+server:
+    port: 8080
+spring:
+  application:
+    name: code-assignment
+  mvc:
+    view:
+      prefix: /views/
+      suffix: .html
+      
+      
+  

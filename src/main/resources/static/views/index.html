@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Analyze Images</title>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script>
+	$(document).ready(function () {
+		$("#img_data").submit(function(event){
+			event.preventDefault();
+			var post_url = $(this).attr("action");
+			var request_method = $(this).attr("method");
+			var form_data = $(this).serialize();
+			$("#submitBtn").prop("disabled", true);
+			
+			$('#comparison-results').empty();
+			$('#comparison-results').append("<br/>Analysis in Progress...");
+			
+			$.ajax({
+				url : post_url,
+				type: request_method,
+				data : form_data
+			}).done(function(response) {
+				var div_content = "<br/>";
+
+				div_content += "<table border=\"1\">";
+				div_content += "<caption>Image Comparison Results...</caption>";
+				div_content += "<thead>";
+				div_content += "<tr>";
+				div_content += "<th width=\"25%\">First Image</th>";
+				div_content += "<th width=\"25%\">Second Image</th>";
+				div_content += "<th width=\"15%\">Similarity</th>";
+				div_content += "<th width=\"15%\">Confidence</th>";
+				div_content += "</tr>";
+				div_content += "</thead>";
+
+				div_content += "<tbody>";
+
+				for(ndx=0;ndx<response.length;ndx++) {
+					div_content += "<tr>";
+					div_content += "<td>" + response[ndx].sourceImage + "</td>";
+					div_content += "<td>" + response[ndx].targetImage + "</td>";
+					div_content += "<td style=\"text-align:right;\">" + response[ndx].similaryLevel + "</td>";
+					div_content += "<td style=\"text-align:right;\">" + response[ndx].confidenceLevel + "</td>";
+					div_content += "</tr>";
+				}
+					            
+				div_content += "</tbody>";
+				div_content += "</table>";
+				
+	            $('#comparison-results').html(div_content);
+	            
+				$("#submitBtn").prop("disabled", false);
+			});
+		})
+	});
+	</script>
+</head>
+<body>
+
+<h2>Analyze Images...</h2>
+
+<form action="/image-compare" method="get" id="img_data">
+	<label for="s3Bucket">S3 Bucket:</label>
+	<input type="text" id="s3Bucket" name="s3Bucket" value="" size="80"><br/>
+	
+	<label for="threshold">Similarity Threshold Percent:</label>
+	<input type="text" id="similarityThreshold" name="similarityThreshold" value="80" maxlength="2" size="5">
+	
+	<br/><br/>
+	
+	<input type="submit" name="submit" id="submitBtn" value="Perform..." />
+	
+	<div id="comparison-results">
+		<!-- For comparison-results -->
+	</div>
+	
+</form>
+</body>
+</html>
